@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Оформление заказа{% endblock %}
+
+{% block content %}
+<div class="order-page">
+    <h1 class="order-header">Оформление заказа</h1>
+    <div class="order-container">
+        <form method="POST" class="order-form">
+            {% csrf_token %}
+            <div class="order-field">
+                <label for="first_name">Имя:<span style="color: red;"> *</span></label>
+                <input type="text" name="first_name" id="first_name" required>
+            </div>
+            <div class="order-field">
+                <label for="last_name">Фамилия:<span style="color: red;"> *</span></label>
+                <input type="text" name="last_name" id="last_name" required>
+            </div>
+            <div class="order-field">
+                <label for="middle_name">Отчество (необязательно):</label>
+                <input type="text" name="middle_name" id="middle_name">
+            </div>
+            <div class="order-field">
+                <label for="phone_number">Номер телефона:<span style="color: red;"> *</span></label>
+                <input type="tel" maxlength="11" name="phone_number" id="phone_number"  required>
+            </div>
+            <div class="order-field">
+                <label for="delivery_method">Способ доставки:<span style="color: red;"> *</span></label>
+                <select name="delivery_method" id="delivery_method" required>
+                    {% for method in delivery_methods %}
+                        <option value="{{ method.id }}">{{ method.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="order-field">
+                <label for="delivery_address">Адрес доставки:<span style="color: red;"> *</span></label>
+                <input type="text" name="delivery_address" id="delivery_address" required>
+            </div>
+            <button type="submit" class="order-button">Подтвердить заказ</button>
+        </form>
+    </div>
+
+    {% if messages %}
+        <ul class="order-messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+{% endblock %}

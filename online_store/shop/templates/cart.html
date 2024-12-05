@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Ваша корзина{% endblock %}
+
+{% block content %}
+<div class="cart-page">
+    <h1 class="cart-header">Ваша корзина</h1>
+    <div class="cart-wrapper">
+        {% if unauthenticated %}
+            <p class="cart-message">
+                Чтобы добавлять товары в корзину, вам необходимо
+                <a href="/login">Войти</a> или
+                <a href="/register">Зарегистрироваться</a>.
+            </p>
+        {% else %}
+            {% if products %}
+                <div class="cart-item-container">
+                    {% for item in products %}
+                        <div class="cart-item">
+                            <span class="cart-item-name">{{ item.product.name }}</span>
+                            <span class="cart-item-quantity">{{ item.quantity }} шт. - {{ item.product.price }}₽</span>
+                            <form method="POST" class="cart-remove-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="product_id" value="{{ item.product.id }}">
+                                <button type="submit" class="cart-remove-button" name="remove_product">Удалить</button>
+                            </form>
+                        </div>
+                    {% endfor %}
+                </div>
+                <p class="cart-total-price">Итого: {{ total_price }}₽</p>
+                <form method="POST" class="cart-clear-form">
+                    {% csrf_token %}
+                    <button type="submit" class="cart-clear-button" name="clear_cart">Очистить корзину</button>
+                </form>
+                <a class="cart-checkout-button" href="/checkout">Оформить заказ</a>
+            {% else %}
+                <p class="cart-empty-message">Корзина пуста. Добавьте товары в корзину!</p>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

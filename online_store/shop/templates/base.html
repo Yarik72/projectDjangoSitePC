@@ -1,0 +1,37 @@
+{% load static %}  <!-- Загрузка библиотеки тегов -->
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}PC Arena{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+
+<div class="header">
+    <h1>PC Arena</h1>
+</div>
+
+<nav>
+    <div class="auth-links">
+        {% if user.is_authenticated %}
+            <span>Добро пожаловать, {{ user.username }}!</span>
+            <a href="/shop" class="welcome">Главная</a>
+            <a href="/logout">Выйти</a>
+        {% else %}
+            <a href="/shop" class="welcome">Главная</a>
+            <a href="/register">Регистрация</a>
+            <a href="/login">Войти</a>
+        {% endif %}
+        <a href="/cart">Корзина</a>
+    </div>
+</nav>
+
+
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>

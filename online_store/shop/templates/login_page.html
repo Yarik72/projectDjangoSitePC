@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+
+{% block title %}Вход{% endblock %}
+
+{% block content %}
+<div class="login-page">
+    <h1 class="login-header">Вход</h1>
+    <div class="login-wrapper">
+        {% if error %}
+            <div class="login-error">{{ error }}</div>
+        {% endif %}
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
+            <label for="username">Имя пользователя:</label>
+            <input type="text" name="username" id="username" required>
+            <label for="password">Пароль:</label>
+            <input type="password" name="password" id="password" required>
+            <button type="submit">Войти</button>
+        </form>
+        <p>Нет аккаунта? <a href="/register">Зарегистрируйтесь</a></p>
+    </div>
+</div>
+{% endblock %}
