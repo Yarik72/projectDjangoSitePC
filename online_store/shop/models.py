@@ -2,7 +2,15 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.contrib import admin
 
+
 class Category(models.Model):
+    """
+    Модель категории товаров.
+
+    Атрибуты:
+        name (str): Название категории.
+        image (ImageField): Изображение категории.
+    """
     name = models.CharField(max_length=100)
     image = models.ImageField(upload_to='categories/')
 
@@ -11,6 +19,16 @@ class Category(models.Model):
 
 
 class Product(models.Model):
+    """
+    Модель товара.
+
+    Атрибуты:
+        name (str): Название товара.
+        price (DecimalField): Цена товара.
+        description (TextField): Описание товара.
+        image (ImageField): Изображение товара.
+        category (ForeignKey): Связь с моделью Category многие к одному.
+    """
     name = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField()
@@ -22,6 +40,12 @@ class Product(models.Model):
 
 
 class DeliveryMethod(models.Model):
+    """
+    Модель способа доставки.
+
+    Атрибуты:
+        name (str): Название способа доставки.
+    """
     name = models.CharField(max_length=100)
 
     def __str__(self):
@@ -29,6 +53,12 @@ class DeliveryMethod(models.Model):
 
 
 class Cart(models.Model):
+    """
+    Модель корзины покупок.
+
+    Атрибуты:
+        user (OneToOneField): Связь с моделью User один к одному.
+    """
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='cart')
 
     def __str__(self):
@@ -36,6 +66,14 @@ class Cart(models.Model):
 
 
 class CartProducts(models.Model):
+    """
+    Модель товаров в корзине.
+
+    Атрибуты:
+        cart (ForeignKey): Связь с моделью Cart многие к одному.
+        product (ForeignKey): Связь с моделью Product многие к одному.
+        quantity (PositiveIntegerField): Количество товара в корзине.
+    """
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cart_products')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
@@ -45,6 +83,22 @@ class CartProducts(models.Model):
 
 
 class Order(models.Model):
+    """
+    Модель заказа.
+
+    Атрибуты:
+        user (ForeignKey): Связь с моделью User многие к одному.
+        cart (ForeignKey): Связь с моделью Cart многие к одному.
+        delivery_method (ForeignKey): Связь с моделью DeliveryMethod многие к одному.
+        delivery_address (str): Адрес доставки.
+        first_name (str): Имя получателя.
+        last_name (str): Фамилия получателя.
+        middle_name (str): Отчество получателя (необязательное).
+        phone_number (str): Номер телефона получателя.
+        total_price (DecimalField): Общая стоимость заказа.
+        product_name (str): Название товаров в заказе.
+        created_at (DateTimeField): Дата и время создания заказа.
+       """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     delivery_method = models.ForeignKey(DeliveryMethod, on_delete=models.CASCADE)
@@ -64,5 +118,12 @@ class Order(models.Model):
 
 
 class OrderAdmin(admin.ModelAdmin):
+    """
+    Админ-класс для управления заказами в админке Django.
+
+    Атрибуты:
+        list_display (list): Поля, отображаемые в списке заказов.
+        search_fields (list): Поля, по которым можно осуществлять поиск.
+    """
     list_display = ('id', 'user', 'product_name', 'total_price', 'created_at')
     search_fields = ('user__username', 'product_name', 'first_name', 'last_name', 'phone_number')

@@ -1,18 +1,26 @@
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Product, Category, Cart, CartProducts, Order, DeliveryMethod
-from django.contrib.auth import authenticate, login, logout as auth_logout
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 
 
 def category_list(request):
+    """
+    Отображает список категорий товаров.
+
+    """
     categories = Category.objects.all()
     user = request.user
     return render(request, 'category_list.html', {'categories': categories, 'user': user})
 
 
 def product_list(request, category_id):
+    """
+    Отображает список товаров в выбранной категории с пагинацией.
+    Позволяет добавить товары в корзину.
+    """
     category = get_object_or_404(Category, id=category_id)
     products = Product.objects.filter(category=category)
 
@@ -26,8 +34,9 @@ def product_list(request, category_id):
 
         cart, _ = Cart.objects.get_or_create(user=request.user)
         cart_product, is_created = CartProducts.objects.get_or_create(cart=cart, product=product)
-
+        print(f'сост {is_created}')
         if not is_created:
+            print(f'состояние {is_created}')
             cart_product.quantity += 1
             cart_product.save()
 
@@ -41,6 +50,11 @@ def product_list(request, category_id):
 
 
 def register_view(request):
+    """
+    Обрабатывает регистрацию нового пользователя.
+    Возвращает отрендеренный шаблон с формой регистрации или перенаправление на главную страницу после успешной
+    регистрации.
+    """
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
@@ -54,6 +68,11 @@ def register_view(request):
 
 
 def login_view(request):
+    """
+    Обрабатывает вход пользователя.
+    Возвращает отрендеренный шаблон с формой входаи или перенаправление на главную страницу после успешного
+    входа.
+    """
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -70,11 +89,17 @@ def login_view(request):
 
 
 def logout_view(request):
-    auth_logout(request)
+    """
+    Обрабатывает выход пользователя и перенаправляет на главную страницу магазина.
+    """
+    logout(request)
     return redirect('/shop')
 
 
 def cart_view(request):
+    """
+    Отображает содержимое корзины пользователя.
+    """
     if not request.user.is_authenticated:
         return render(request, 'cart.html', {
             'unauthenticated': True,
@@ -102,6 +127,9 @@ def cart_view(request):
 
 
 def checkout(request):
+    """
+    Обрабатывает заказ, если корзина не пуста, и уведомляет об успешном оформлении.
+    """
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
