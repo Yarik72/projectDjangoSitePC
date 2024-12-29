@@ -80,7 +80,6 @@
    online-store
    | db.sqlite3
    | manage.py
-   | structure.txt
    |
    +---media
    |    +---categories
@@ -92,26 +91,34 @@
    |    | urls.py
    |    | wsgi.py
    |    | __init__.py
-   |    |
-   |    \---__pycache__
-   |         settings.cpython-311.pyc
-   |         urls.cpython-311.pyc
-   |         wsgi.cpython-311.pyc
-   |         __init__.cpython-311.pyc
    |
    \---shop
-        admin.py
-        apps.py
-        models.py
-        tests.py
-        views.py
-        __init__.py
-        |
-        +---migrations
-             | 0001_initial.py
-             | __init__.py
-             |
-             \---__pycache__
+    |   admin.py
+    |   apps.py
+    |   models.py
+    |   tests.py
+    |   views.py
+    |   __init__.py
+    |   
+    +---migrations
+    |   |   0001_initial.py
+    |   |   __init__.py
+    |   
+    |           
+    +---static
+    |   \---css
+    |           styles.css
+    |           
+    +---templates
+           base.html
+           cart.html
+           category_list.html
+           checkout.html
+           login_page.html
+           product_list.html
+           registration_page.html
+           
+    
 ```
 
 ---
