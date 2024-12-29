@@ -34,9 +34,7 @@ def product_list(request, category_id):
 
         cart, _ = Cart.objects.get_or_create(user=request.user)
         cart_product, is_created = CartProducts.objects.get_or_create(cart=cart, product=product)
-        print(f'сост {is_created}')
         if not is_created:
-            print(f'состояние {is_created}')
             cart_product.quantity += 1
             cart_product.save()
 
